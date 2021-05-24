@@ -1,25 +1,25 @@
 defmodule Exmeal.Meals.DeleteTest do
-  use Exmeal.DataCase
+  use Exmeal.DataCase, async: true
+  import Exmeal.Factory
+  alias Exmeal.Meal
 
   describe "Delete Meal" do
     test "when a valid id is given, returns the meal" do
-      params = %{
-        calories: 20,
-        date: ~D[2001-05-02],
-        description: "Banana"
-      }
+      id = "7bbd8c4a-104c-4b7e-a3e8-0e447e5f2412"
 
-      {_ok, meal} = Exmeal.create_meal(params)
+      insert(:meal)
 
-      response = Exmeal.delete_meal(meal.id)
+      response = Exmeal.delete_meal(id)
 
-      assert {:ok,
-              %Exmeal.Meal{
-                calories: 20,
-                date: ~D[2001-05-02],
-                description: "Banana",
-                id: _id
-              }} = response
+      assert {
+               :ok,
+               %Meal{
+                 calories: _cals,
+                 date: ~N[2001-05-02 12:00:00],
+                 description: "Banana",
+                 id: "7bbd8c4a-104c-4b7e-a3e8-0e447e5f2412"
+               }
+             } = response
     end
 
     test "when an invalid id is given, returns an error" do

@@ -1,24 +1,24 @@
 defmodule Exmeal.Meals.UpdateTest do
   use Exmeal.DataCase
+  import Exmeal.Factory
 
   describe "Update Meal" do
     test "when a valid id is given, returns the meal" do
-      params = %{
-        calories: 20,
-        date: ~D[2001-05-02],
-        description: "Banana"
-      }
-      {_ok, meal} = Exmeal.create_meal(params)
+      id = "7bbd8c4a-104c-4b7e-a3e8-0e447e5f2412"
 
-      response = Exmeal.update_meal(%{"id" => meal.id, "calories" => 25})
+      insert(:meal)
+
+      response = Exmeal.update_meal(%{"id" => id, "calories" => 253.4})
 
       assert {:ok,
               %Exmeal.Meal{
-                calories: 25,
-                date: ~D[2001-05-02],
+                calories: cals,
+                date: ~N[2001-05-02 12:00:00],
                 description: "Banana",
                 id: _id
               }} = response
+
+      assert cals == Decimal.from_float(253.4)
     end
 
     test "when an invalid id is given, returns an error" do
