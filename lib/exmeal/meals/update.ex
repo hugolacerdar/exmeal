@@ -1,5 +1,5 @@
 defmodule Exmeal.Meals.Update do
-  alias Exmeal.{Error, Repo, Meal}
+  alias Exmeal.{Error, Meal, Repo}
 
   def call(%{"id" => id} = params) do
     case Repo.get(Meal, id) do

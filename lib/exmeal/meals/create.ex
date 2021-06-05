@@ -1,7 +1,18 @@
 defmodule Exmeal.Meals.Create do
-  alias Exmeal.{Error, Meal, Repo}
+  alias Exmeal.{Error, Meal, Repo, User}
 
-  def call(params) do
+  def call(%{"user_id" => user_id} = params) do
+    case(Repo.get(User, user_id)) do
+      nil -> {:error, Error.user_not_found()}
+      %User{} -> do_create(params)
+    end
+  end
+
+  def call(_params) do
+    {:error, Error.build(:bad_request, %{"user_id" => ["can't be blank"]})}
+  end
+
+  defp do_create(params) do
     params
     |> Meal.changeset()
     |> Repo.insert()
