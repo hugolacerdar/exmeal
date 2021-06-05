@@ -4,6 +4,12 @@ defmodule Exmeal.MealsControllerTest do
   import Exmeal.Factory
 
   describe "create/2" do
+    setup do
+      user = insert(:user)
+
+      {:ok, user: user}
+    end
+
     test "when all params are valid, creates a meal", %{conn: conn} do
       params = build(:meal_params)
 
@@ -16,18 +22,42 @@ defmodule Exmeal.MealsControllerTest do
                "meal" => %{
                  "calories" => "20.44",
                  "date" => "2001-05-02T12:00:00",
-                 "description" => "Banana"
+                 "description" => "Banana",
+                 "user_id" => _id
                },
                "message" => "Meal created successfully!"
              } = response
     end
 
     test "when there are invalid params, returns an error", %{conn: conn} do
-      params = %{description: "Banana"}
+      params = %{
+        "user_id" => "82776a19-02ef-4166-8370-f285a0734c26",
+        "description" => "Banana"
+      }
 
       expected_response = %{
-        "message" => %{"calories" => ["can't be blank"], "date" => ["can't be blank"]}
+        "message" => %{
+          "calories" => ["can't be blank"],
+          "date" => ["can't be blank"]
+        }
       }
+
+      response =
+        conn
+        |> post(Routes.meals_path(conn, :create, params))
+        |> json_response(:bad_request)
+
+      assert response == expected_response
+    end
+
+    test "when user id is missing, returns an error", %{conn: conn} do
+      params = %{
+        "calories" => "20.44",
+        "date" => "2001-05-02 12:00:00",
+        "description" => "Banana"
+      }
+
+      expected_response = %{"message" => %{"user_id" => ["can't be blank"]}}
 
       response =
         conn
@@ -39,9 +69,14 @@ defmodule Exmeal.MealsControllerTest do
   end
 
   describe "delete/2" do
+    setup do
+      user = insert(:user)
+
+      {:ok, user: user}
+    end
+
     test "when id exist, delete the meal", %{conn: conn} do
       id = "7bbd8c4a-104c-4b7e-a3e8-0e447e5f2412"
-
       insert(:meal)
 
       response =
@@ -67,6 +102,12 @@ defmodule Exmeal.MealsControllerTest do
   end
 
   describe "update/2" do
+    setup do
+      user = insert(:user)
+
+      {:ok, user: user}
+    end
+
     test "when id exist, update the meal", %{conn: conn} do
       id = "7bbd8c4a-104c-4b7e-a3e8-0e447e5f2412"
 
@@ -101,6 +142,12 @@ defmodule Exmeal.MealsControllerTest do
   end
 
   describe "show/2" do
+    setup do
+      user = insert(:user)
+
+      {:ok, user: user}
+    end
+
     test "when id exist, return the meal", %{conn: conn} do
       id = "7bbd8c4a-104c-4b7e-a3e8-0e447e5f2412"
 
