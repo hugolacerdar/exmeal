@@ -4,6 +4,11 @@ defmodule Exmeal.Meals.DeleteTest do
   alias Exmeal.Meal
 
   describe "Delete Meal" do
+    setup do
+      user = insert(:user)
+      {:ok, user: user}
+    end
+
     test "when a valid id is given, returns the meal" do
       id = "7bbd8c4a-104c-4b7e-a3e8-0e447e5f2412"
 

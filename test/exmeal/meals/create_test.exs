@@ -4,6 +4,11 @@ defmodule Exmeal.Meals.CreateTest do
   alias Exmeal.Error
 
   describe "Create Meal" do
+    setup do
+      user = insert(:user)
+      {:ok, user: user}
+    end
+
     test "when all params are valid, returns the meal" do
       params = build(:meal_params)
 
